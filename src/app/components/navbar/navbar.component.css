@@ -1,0 +1,30 @@
+.navbar {
+    background-color: #1E1E2F;
+    height: 8vh;
+}
+
+.title {
+    color: #FFFFFF;
+    font-family: Inknut Antiqua;
+    margin: 0;
+
+}
+
+.flex-display {
+    display: flex;
+    align-items: center;
+}
+
+.btn-log {
+    color: #FFFFFF;
+    font-family: Inknut Antiqua;
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+.intro {
+    color: #C1B6DA;
+    font-family: Indie Flower;
+    margin: 0;
+    font-size: 20px;
+}

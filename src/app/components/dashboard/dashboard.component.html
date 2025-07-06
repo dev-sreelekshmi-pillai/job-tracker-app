@@ -1,0 +1,108 @@
+<div class="container-fluid text-center dashboard">
+    <div class="row">
+        <div class="col">
+            <section>
+                @if (!auth.user()) {
+                <div class="align-well">
+                    <!-- <div class="flower-loader">
+            <div class="petal petal1"></div>
+            <div class="petal petal2"></div>
+            <div class="petal petal3"></div>
+            <div class="petal petal4"></div>
+            <div class="petal petal5"></div>
+            <div class="petal petal6"></div>
+        </div> -->
+                    Hello, Welcome to our mini Job Application Tracker.<br>
+                    Please be kind and explore the application. Login with your Gmail account and jump
+                    around. Provide your feedback so that I could tweak as much as possible. <br>Thanks
+                    for visiting.
+                </div>
+                }
+                @else if (isLoading) {
+                <div class="align-well">
+
+                    Hi {{auth.user()?.displayName }}, I appreciate you taking your time exploring application
+                    tracker that is heating it's head up to keep a track
+                    off all those job application that we can't get a hold of. Please stay patient while she loads all
+                    those hectic
+                    ones.One of them is gonna be a life changing one for you...It really is, so keep believing in
+                    yourself and keep
+                    up the work.
+                </div>
+                }
+                @else if (!isLoading && applications.length === 0) {
+                <div>
+                    Currently, Your mail list is empty of applications. Please continue applying for your dream jobs and
+                    let us help
+                    you track your progress. <br>
+                    With Love, Team.
+                </div>
+                }
+                @else {
+                <div class="buttons-end">
+                    <button class="btn btn-primary" type="button">Sync Mails</button>
+                    <button class="btn btn-secondary mx-2" type="button">View Dashboard</button>
+                </div>
+                <mat-table *ngIf="!isLoading && applications" [dataSource]="dataSource" matSort
+                    (matSortChange)="announceSortChange($event)">
+                    <ng-container matColumnDef="date">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header="date" sortActionDescription="Sort by Date">
+                            Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.applicationDate | date}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="subject">
+                        <mat-header-cell *matHeaderCellDef> Subject </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.subject}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="from">
+                        <mat-header-cell *matHeaderCellDef>
+                            From </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.from}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef>
+                            Status </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="companyName">
+                        <mat-header-cell *matHeaderCellDef>
+                            Company </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.companyName}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="jobTitle">
+                        <mat-header-cell *matHeaderCellDef>
+                            Role </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.jobTitle}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="source">
+                        <mat-header-cell *matHeaderCellDef> Source
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.source}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="notes">
+                        <mat-header-cell *matHeaderCellDef> Notes </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.notes}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="edit">
+                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> <span class="material-symbols-outlined" matButton
+                                (click)="editJobApplication(element)"> edit </span> </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator [pageSizeOptions]="[20, 50, 100]" showFirstLastButtons
+                    aria-label="Select page of periodic elements">
+                </mat-paginator>
+                }
+                <!-- <div *ngIf="error" class="error">{{ error() }}</div> -->
+                <!-- <mat-slide-toggle>Toggle me!</mat-slide-toggle> -->
+            </section>
+
+        </div>
+    </div>
+</div>
+<div>
+    <!-- <app-jobappliction-form [appForm]="editJobField" appFormView /> -->
+</div>

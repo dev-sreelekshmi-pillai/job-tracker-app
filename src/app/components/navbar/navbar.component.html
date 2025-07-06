@@ -1,0 +1,28 @@
+<nav class="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand ">
+            <h1 class="title">JobHunt Tracker Pro</h1>
+        </a>
+        <!-- <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form> -->
+        <!-- {{errMessage}} -->
+
+
+        @if (user) {
+        <div class="flex-display">
+            <p class="intro">Welcome {{ user.displayName }} </p>
+            <button class="btn btn-log" (click)="logout()">Logout</button>
+            <!-- <button (click)="syncUserData()">Sync data()</button> -->
+        </div>
+        }
+        @else {
+        <button class="btn btn-log" (click)="login()">Sign Up with Google</button> }
+
+
+
+
+        <!-- <mat-slide-toggle> Dark Mode ☀️🌙</mat-slide-toggle> -->
+    </div>
+</nav>

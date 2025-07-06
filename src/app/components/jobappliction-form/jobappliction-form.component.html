@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Edit Application</h2>
+<mat-dialog-content>
+    <div>
+        <form [formGroup]="applicationForm">
+
+            <div class="form-group">
+                <label for="date">date</label>
+                <input type="date" class="form-control" id="date" placeholder="date" formControlName="subject">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">subject</label>
+                <input type="text" class="form-control" id="subject" placeholder="subject" formControlName="subject">
+            </div>
+
+            <div class="form-group">
+                <label for="from">from</label>
+                <input type="text" class="form-control" id="from" placeholder="from" formControlName="from">
+            </div>
+
+            <div class="form-group">
+                <label for="status">status</label>
+                <input type="text" class="form-control" id="status" placeholder="status" formControlName="status">
+            </div>
+
+            <div class="form-group">
+                <label for="companyName">companyName</label>
+                <input type="text" class="form-control" id="companyName" placeholder="companyName"
+                    formControlName="companyName">
+            </div>
+
+            <div class="form-group">
+                <label for="jobTitle">jobTitle</label>
+                <input type="text" class="form-control" id="jobTitle" placeholder="jobTitle" formControlName="jobTitle">
+            </div>
+
+            <div class="form-group">
+                <label for="source">source</label>
+                <input type="text" class="form-control" id="source" placeholder="source" formControlName="source">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">notes</label>
+                <input type="text" class="form-control" id="notes" placeholder="notes" formControlName="notes">
+            </div>
+
+        </form>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton mat-dialog-close>Cancel</button>
+    <button matButton [mat-dialog-close]="true" cdkFocusInitial>Install</button>
+</mat-dialog-actions>

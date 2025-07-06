@@ -1,0 +1,30 @@
+* {
+    color: #FFFFFF;
+}
+
+.dashboard {
+    /* height: 90vh; */
+    width: 100%;
+    /* padding: 0; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+header {
+    height: 10vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+}
+
+main {
+
+    padding-top: 10vh;
+    margin: 0 auto;
+    width: 100%;
+}
