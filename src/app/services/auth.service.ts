@@ -35,7 +35,7 @@ export class AuthService {
 
         // Set the signals
         this.token.set(accessToken);
-        console.log(credential);
+        // console.log(credential);
 
 
       }).catch((error) => {

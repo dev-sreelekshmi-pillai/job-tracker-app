@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { User } from '@angular/fire/auth';
-import { collection, doc, Firestore, getDoc, getDocs, setDoc, Timestamp } from '@angular/fire/firestore';
+import { collection, deleteDoc, doc, Firestore, getDoc, getDocs, serverTimestamp, setDoc, Timestamp, updateDoc } from '@angular/fire/firestore';
 import { GmailService } from './gmail.service';
 import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 
@@ -17,13 +17,14 @@ export class SharedService {
 
 
   getApplications(user: User): Observable<any[]> {
-    // console.log('We are in get applications method in shared service');
+    console.log('We are in get applications method in shared service');
     const uid = user?.uid;
     const userRef = doc(this.firestore, `users/${uid}`);
+
     return from(getDoc(userRef)).pipe(
       switchMap(docSnap => {
         if (!docSnap.exists()) {
-          // console.log('Initial sync - fetching Gmail data');
+          console.log('Initial sync - fetching Gmail data');
           return this.gmailService.fetchRecentEmails().pipe(
             switchMap((emails: any) => {
               const saveUser$ = from(setDoc(userRef, {
@@ -59,6 +60,31 @@ export class SharedService {
             }));
         }
       }));
+  }
+
+  updateApplication(user: User, messageId: string, updatedData: any) {
+    const appDoc = doc(this.firestore, `users/${user.uid}/applications/${messageId}`);
+    return from(updateDoc(appDoc, updatedData));
+  }
+
+  archiveApplication(user: User, messageId: string, archivedData: any) {
+    if (!user) return;
+    const archiveRef = doc(this.firestore, `archives/${user.uid}/applications/${messageId}`)
+    const sourceRef = doc(this.firestore, `users/${user.uid}/applications/${messageId}`);
+    const archivedDataPayload = { ...archivedData, archivedDate: serverTimestamp() }
+    const archiveSave$ = from(setDoc(archiveRef, archivedDataPayload));
+    const delete$ = from(deleteDoc(sourceRef));
+    return forkJoin([archiveSave$, delete$])
+  }
+
+  deleteApplication(user: User, messageId: string, deletedData: any) {
+    if (!user) return
+    const deleteRef = doc(this.firestore, `deleted/${user.uid}/applications/${messageId}`)
+    const sourceRef = doc(this.firestore, `users/${user.uid}/applications/${messageId}`);
+    const deletedDataPayload = { ...deletedData, deletedDate: serverTimestamp() }
+    const deleteSave$ = from(setDoc(deleteRef, deletedDataPayload));
+    const delete$ = from(deleteDoc(sourceRef));
+    return forkJoin([deleteSave$, delete$])
   }
 
 

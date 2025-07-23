@@ -1,0 +1,9 @@
+.confirm-title {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.mat-mdc-dialog-content {
+    text-align: center;
+}

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { bufferCount, catchError, concatMap, delay, forkJoin, from, map, Observable, of, reduce, switchMap } from 'rxjs';
+import { bufferCount, catchError, concatMap, delay, forkJoin, from, map, Observable, of, reduce, switchMap, toArray } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +18,12 @@ export class GmailService {
     // const query = `label:inbox OR label:work/Jobs-appliede OR label:work/Jobs-rejectede subject:(application OR applied OR interview OR thank you)`;
     const query = `label:inbox OR label:work/Jobs-appliede OR label:work/Jobs-rejectede subject:(application OR applied OR interview OR("thank you" AND(applying OR application)))`;
     // Make max-rsults to 250 once testing is complteted and solve issue of https://gmail.googleapis.com/gmail/v1/users/me/messages/1958edc2a2745c86 429 (Too Many Requests)
-    const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=50`
+    const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=250`
     // const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10`
     // const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}`
     return this.http.get(url).pipe(
       switchMap((data: any) => {
+        console.warn("in service fetch")
         if (!data.messages || data.messages.length === 0) {
           return of([]);
         }
@@ -38,19 +39,33 @@ export class GmailService {
       }))
   }
 
+  // batchFetchEmailDetails(messageIds: string[], batchSize: number): Observable<any[]> {
+  //   return from(messageIds).pipe(
+  //     bufferCount(batchSize),
+  //     concatMap((batch, batchIndex) =>
+  //     // forkJoin(batch.map(id => this.fetchEmailDetails(id))).pipe(
+  //     //   delay(index * 500)
+  //     // )
+  //       
+  //     ),
+  //     reduce<any[], any[]>((all, batch) => [...all, ...batch], [])
+  //   );
+  // }
+
   batchFetchEmailDetails(messageIds: string[], batchSize: number): Observable<any[]> {
     return from(messageIds).pipe(
-      bufferCount(batchSize),
-      concatMap((batch, index) =>
-        forkJoin(batch.map(id => this.fetchEmailDetails(id))).pipe(
-          delay(index * 500)
+      bufferCount(batchSize), // Break into batches
+      concatMap((batch, batchIndex) =>
+        // Throttle each request within the batch (one every 200ms)
+        from(batch).pipe(
+          concatMap((id, i) => this.fetchEmailDetails(id).pipe(delay(i * 100))),
+          toArray(), // Gather the batch results
+          delay(batchIndex * 50) // Delay before starting next batch
         )
       ),
       reduce<any[], any[]>((all, batch) => [...all, ...batch], [])
     );
   }
-
-
 
 
   fetchEmailDetails(messageId: string,) {
@@ -98,7 +113,7 @@ export class GmailService {
     }
     const jobTitleMatch = lowerText.match(/(position of|position for|application for|role of|interest in|application to)\s(.+?)(\.|\!|\n)/);
     const match = lowerText.match(/for (the )?(?<title>.+?) role(\.|\!|\n)/);
-    const jobTitle = jobTitleMatch ? jobTitleMatch[2].trim() : match ? match[2].trim() : 'Frontend Develoepr';
+    const jobTitle = jobTitleMatch ? jobTitleMatch[2].trim() : match ? match[2].trim() : 'Frontend Developer';
     return { companyName: this.capitalize(companyName), jobTitle };
   }
 

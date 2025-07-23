@@ -1,0 +1,18 @@
+<h2 class="confirm-title" mat-dialog-title>Are you sure, you wanna {{data.actions }} the application</h2>
+<mat-dialog-content>
+    @if (data.actions === 'archive') {
+    <div>
+        Archived applications are stored in memory for 30 days, recover from the Archived sections as you wish.
+    </div>
+    }@else if(data.actions == 'delete'){
+    <div>
+        Deleted applications are permanently deleted from memory.
+    </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button mat-dialog-close cdkFocusInitial>Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+        {{data.actions | titlecase}}
+    </button>
+</mat-dialog-actions>

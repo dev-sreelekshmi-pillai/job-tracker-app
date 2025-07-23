@@ -30,7 +30,8 @@
                     up the work.
                 </div>
                 }
-                @else if (!isLoading && applications.length === 0) {
+                @else if (!isLoading && !applications) {
+                <!-- @else if (!isLoading && applications.length === 0) { -->
                 <div>
                     Currently, Your mail list is empty of applications. Please continue applying for your dream jobs and
                     let us help
@@ -43,7 +44,7 @@
                     <button class="btn btn-primary" type="button">Sync Mails</button>
                     <button class="btn btn-secondary mx-2" type="button">View Dashboard</button>
                 </div>
-                <mat-table *ngIf="!isLoading && applications" [dataSource]="dataSource" matSort
+                <mat-table *ngIf="!isLoading && applications" [dataSource]="applications" matSort
                     (matSortChange)="announceSortChange($event)">
                     <ng-container matColumnDef="date">
                         <mat-header-cell *matHeaderCellDef mat-sort-header="date" sortActionDescription="Sort by Date">
@@ -52,7 +53,11 @@
                     </ng-container>
                     <ng-container matColumnDef="subject">
                         <mat-header-cell *matHeaderCellDef> Subject </mat-header-cell>
-                        <mat-cell *matCellDef="let element"> {{element.subject}} </mat-cell>
+                        <mat-cell *matCellDef="let element">
+                            <a class="sub-link" target="_blank" [href]="mailLink+element.messageId">{{element.subject
+                                |slice : 0:50}}
+                                <ng-container *ngIf="element.subject.length>30">...</ng-container> </a>
+                        </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="from">
                         <mat-header-cell *matHeaderCellDef>
@@ -88,6 +93,14 @@
                         <mat-cell *matCellDef="let element"> <span class="material-symbols-outlined" matButton
                                 (click)="editJobApplication(element)"> edit </span> </mat-cell>
                     </ng-container>
+                    <!-- <ng-container matColumnDef="archive">
+                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> <button mat-icon-button mat-icon-button
+                                matTooltip="Archive Application" (click)="confirmArchive(element)">
+                                <mat-icon>archive</mat-icon>
+                            </button> </mat-cell>
+                    </ng-container> -->
+
 
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
@@ -104,5 +117,4 @@
     </div>
 </div>
 <div>
-    <!-- <app-jobappliction-form [appForm]="editJobField" appFormView /> -->
 </div>
